@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 export interface UseFramerCanvasProps {
   keyframes: HTMLImageElement[];
-  scrollOptions?: any;
+  scrollOptions?: Parameters<typeof useScroll>[0];
   springConfig?: SpringOptions;
 }
 
