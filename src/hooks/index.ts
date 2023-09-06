@@ -1,2 +1,2 @@
-export { default as useFramerCanvas } from './useFramerCanvas';
-export * from './useFramerCanvas';
+export { default as useScrollImageSequenceFramerCanvas } from './useScrollImageSequenceFramerCanvas';
+export * from './useScrollImageSequenceFramerCanvas';

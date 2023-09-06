@@ -6,13 +6,15 @@ import {
 } from 'framer-motion';
 import { useCallback, useEffect, useRef } from 'react';
 
-export interface UseFramerCanvasProps {
+export interface UseScrollImageSequenceFramerCanvasProps {
+  onDraw: (img: HTMLImageElement, ctx: CanvasRenderingContext2D) => void;
   keyframes: HTMLImageElement[];
   scrollOptions?: Parameters<typeof useScroll>[0];
   springConfig?: SpringOptions;
 }
 
-const useFramerCanvas = ({
+const useScrollImageSequenceFramerCanvas = ({
+  onDraw,
   keyframes,
   scrollOptions,
   springConfig = {
@@ -21,32 +23,11 @@ const useFramerCanvas = ({
     restSpeed: 0.5,
     restDelta: 0.001,
   },
-}: UseFramerCanvasProps) => {
+}: UseScrollImageSequenceFramerCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const { scrollYProgress } = useScroll(scrollOptions);
   const progress = useSpring(scrollYProgress, springConfig);
-
-  const drawImage = (img: HTMLImageElement, ctx: CanvasRenderingContext2D) => {
-    const canvas = ctx.canvas;
-    const widthRatio = canvas.width / img.width;
-    const heightRatio = canvas.height / img.height;
-    const ratio = Math.max(widthRatio, heightRatio);
-    const centerX = (canvas.width - img.width * ratio) / 2;
-    const centerY = (canvas.height - img.height * ratio) / 2;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(
-      img,
-      0,
-      0,
-      img.width,
-      img.height,
-      centerX,
-      centerY,
-      img.width * ratio,
-      img.height * ratio,
-    );
-  };
 
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current!;
@@ -58,7 +39,7 @@ const useFramerCanvas = ({
     (progress: number) => {
       const constraint = (n: number, min = 0, max = keyframes.length - 1) =>
         Math.min(Math.max(n, min), max);
-      drawImage(
+      onDraw(
         keyframes[constraint(Math.round(keyframes.length * progress))],
         canvasRef.current!.getContext('2d')!,
       );
@@ -80,7 +61,7 @@ const useFramerCanvas = ({
 
   useEffect(() => {
     keyframes[0].onload = () => {
-      drawImage(keyframes[0], canvasRef.current!.getContext('2d')!);
+      onDraw(keyframes[0], canvasRef.current!.getContext('2d')!);
     };
   }, [keyframes]);
 
@@ -89,4 +70,4 @@ const useFramerCanvas = ({
   return [progress, canvasRef] as const;
 };
 
-export default useFramerCanvas;
+export default useScrollImageSequenceFramerCanvas;
