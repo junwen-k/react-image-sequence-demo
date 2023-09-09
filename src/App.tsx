@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'framer-motion';
 import { useMemo, useRef } from 'react';
 
 import { useScrollImageSequenceFramerCanvas } from './hooks';
